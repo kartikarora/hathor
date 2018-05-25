@@ -1,6 +1,5 @@
 var color = [];
-var song, fft;
-var playing = false;
+var song, fft;i
 
 function preload() {
     song = loadSound('song3.mp3');
@@ -13,7 +12,6 @@ function setup() {
     color = [random(0, 255), random(0, 255), random(0, 255)];
     song.setVolume(1);
     song.play();
-    playing = true;
     fft = new p5.FFT();
     fft.setInput(song);
 }
