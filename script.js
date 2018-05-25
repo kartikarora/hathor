@@ -1,5 +1,5 @@
 var color = [];
-var song, fft;i
+var song, fft;
 
 function preload() {
     song = loadSound('song3.mp3');
@@ -10,7 +10,6 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     soundFormats('mp3');
     color = [random(0, 255), random(0, 255), random(0, 255)];
-    song.setVolume(1);
     song.play();
     fft = new p5.FFT();
     fft.setInput(song);
@@ -18,11 +17,27 @@ function setup() {
 
 function draw() {
     background(color);
+    var r = 120;
+    var d = 8.25;
+    var MAX = 330;
+    var count = 19;
     var spec = fft.analyze();
-    for (i = 0; i < spec.length; i++) {
-        stroke(spec[i]);
-        line(map(i, 0, spec.length, 0, width), 0, map(i, 0, spec.length, 0, width), map(spec[i], 0, 255, height, 0));
+    fill('#191970');
+    rect(0, 0, width, height);
+    fill('#ECF0F1');
+    push();
+    translate(width / 2, height / 2);
+    for (var n = 0; n < spec.length/100; n++) {
+        for (var a = 0; a <= 360; a += 1) {
+            var progress = constrain(map(spec[n],0,255, 0, 1), 0, 1);
+            var ease = -0.5*(cos(progress * PI) - 1);
+            var phase = 0 + 2*PI*ease + PI + radians(map(frameCount%MAX, 0, MAX, 0, 360));
+            var x = map(a, 0, 360, -r, r);
+            var y = r * sqrt(1 - pow(x/r, 2)) * sin(radians(a) + phase);
+            ellipse(x, y, 1.5, 1.5);
+        }
     }
+    pop();
     fill(255);
     textSize(56);
     if (song.isPlaying()) {
