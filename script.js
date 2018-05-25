@@ -40,5 +40,5 @@ function keyPressed() {
             song.play();
         }
     }
-    return false; // prevent default
+    return false;
 }
