@@ -2,7 +2,7 @@ var color = [];
 var song, fft;
 
 function preload() {
-    song = loadSound('song3.mp3');
+    song = loadSound('song' + random([1, 2, 3]) + '.mp3');
 }
 
 function setup() {
@@ -22,19 +22,29 @@ function draw() {
     var MAX = 330;
     var count = 19;
     var spec = fft.analyze();
-    fill('#191970');
-    rect(0, 0, width, height);
-    fill('#ECF0F1');
     push();
-    translate(width / 2, height / 2);
-    for (var n = 0; n < spec.length/100; n++) {
+    translate(width / 2 - 300, height / 2);
+    for (var n = 0; n < 10; n++) {
         for (var a = 0; a <= 360; a += 1) {
-            var progress = constrain(map(spec[n],0,255, 0, 1), 0, 1);
-            var ease = -0.5*(cos(progress * PI) - 1);
-            var phase = 0 + 2*PI*ease + PI + radians(map(frameCount%MAX, 0, MAX, 0, 360));
+            var progress = constrain(map(spec[n], 0, 255, 0, 1), 0, 1);
+            var ease = -0.5 * (cos(progress * PI) - 1);
+            var phase = 0 + 2 * PI * ease + PI + radians(map(frameCount % MAX, 0, MAX, 0, 360));
             var x = map(a, 0, 360, -r, r);
-            var y = r * sqrt(1 - pow(x/r, 2)) * sin(radians(a) + phase);
-            ellipse(x, y, 1.5, 1.5);
+            var y = r * sqrt(1 - pow(x / r, 2)) * sin(radians(a) + phase);
+            ellipse(x, y, 1, 1);
+        }
+    }
+    pop();
+    push();
+    translate(width / 2 + 300, height / 2);
+    for (var n = 400; n < 410; n++) {
+        for (var a = 0; a <= 360; a += 1) {
+            var progress = constrain(map(spec[n], 0, 255, 0, 1), 0, 1);
+            var ease = -0.5 * (cos(progress * PI) - 1);
+            var phase = 0 + 2 * PI * ease + PI + radians(map(frameCount % MAX, 0, MAX, 0, 360));
+            var x = map(a, 0, 360, -r, r);
+            var y = r * sqrt(1 - pow(x / r, 2)) * sin(radians(a) + phase);
+            ellipse(x, y, 1, 1);
         }
     }
     pop();
