@@ -19,10 +19,11 @@ function draw() {
     to = color(spec[0], spec[341], spec[682]);
     background(lerpColor(from, to, 0.5));
     push();
-    translate(0, height / 2);
+    translate(0, height - 100);
     noStroke();
-    for (var x = 0; x < width; x += (width / spec.length)) {
-        ellipse(map(x, 0, spec.length, 0, width), map(spec[x], 0, 255, height / 2, -height / 2), map(spec[x], 0, 255, 0, 100));
+    for (var x = 0; x < width; x++) {
+        ellipse(map(Math.log(x + 2), 0, Math.log(1024), 0, width), map(spec[x], 0, 255, height / 2, 0) - height + 100, map(spec[x], 0, 255, 0, 50));
+        ellipse(map(Math.log(x + 2), 0, Math.log(1024), 0, width), map(spec[x], 0, 255, height / 2, height) - height + 100, map(spec[x], 0, 255, 0, 50));
     }
     pop();
     push();
