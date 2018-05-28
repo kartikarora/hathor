@@ -1,60 +1,40 @@
-var color = [];
-var song, fft;
+var song, fft, from, to, spec;
 
 function preload() {
     song = loadSound('song' + random([1, 2, 3]) + '.mp3');
 }
 
 function setup() {
-    // createCanvas(1024, 720);
     createCanvas(windowWidth, windowHeight);
     soundFormats('mp3');
-    color = [random(0, 255), random(0, 255), random(0, 255)];
     song.play();
     fft = new p5.FFT();
     fft.setInput(song);
+    to = color(0, 0, 0);
 }
 
 function draw() {
-    background(color);
-    var r = 120;
-    var d = 8.25;
-    var MAX = 330;
-    var count = 19;
-    var spec = fft.analyze();
+    spec = fft.analyze();
+    from = to;
+    to = color(spec[0], spec[341], spec[682]);
+    background(lerpColor(from, to, 0.5));
     push();
-    translate(width / 2 - 300, height / 2);
-    for (var n = 0; n < 10; n++) {
-        for (var a = 0; a <= 360; a += 1) {
-            var progress = constrain(map(spec[n], 0, 255, 0, 1), 0, 1);
-            var ease = -0.5 * (cos(progress * PI) - 1);
-            var phase = 0 + 2 * PI * ease + PI + radians(map(frameCount % MAX, 0, MAX, 0, 360));
-            var x = map(a, 0, 360, -r, r);
-            var y = r * sqrt(1 - pow(x / r, 2)) * sin(radians(a) + phase);
-            ellipse(x, y, 1, 1);
-        }
+    translate(0, height / 2);
+    noStroke();
+    for (var x = 0; x < width; x += (width / spec.length)) {
+        ellipse(map(x, 0, spec.length, 0, width), map(spec[x], 0, 255, height / 2, -height / 2), map(spec[x], 0, 255, 0, 100));
     }
     pop();
     push();
-    translate(width / 2 + 300, height / 2);
-    for (var n = 400; n < 410; n++) {
-        for (var a = 0; a <= 360; a += 1) {
-            var progress = constrain(map(spec[n], 0, 255, 0, 1), 0, 1);
-            var ease = -0.5 * (cos(progress * PI) - 1);
-            var phase = 0 + 2 * PI * ease + PI + radians(map(frameCount % MAX, 0, MAX, 0, 360));
-            var x = map(a, 0, 360, -r, r);
-            var y = r * sqrt(1 - pow(x / r, 2)) * sin(radians(a) + phase);
-            ellipse(x, y, 1, 1);
-        }
-    }
-    pop();
+    translate(width / 2, 0);
     fill(255);
     textSize(56);
     if (song.isPlaying()) {
-        text("Playing", width / 2 - 30, 50);
+        text("Playing", 0, 50);
     } else {
-        text("Paused", width / 2 - 30, 50);
+        text("Paused", 0, 50);
     }
+    pop();
 }
 
 function keyPressed() {
