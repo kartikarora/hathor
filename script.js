@@ -9,7 +9,7 @@ function loadingComplete() {
     to = color(0, 0, 0);
 
     player_img = r > 2 ? createImg('pause.svg') : createImg('pause_dark.svg');
-    player_img.position(windowWidth / 2 - 24, windowHeight - 130);
+    player_img.position(windowWidth / 2 - 24, windowHeight - 120);
     player_img.mousePressed(songStateChange);
     loaded = true;
 }
@@ -48,7 +48,7 @@ function draw() {
         fill(r > 2 ? 255 : 0);
         push();
         translate(width / 2, height / 2);
-        ellipse(0, map(sin(frameCount % PI), 50));
+        ellipse(0, map(sin(frameCount/10 %  PI), -1, 1, 100, -100), 50);
     }
 }
 
@@ -73,12 +73,4 @@ function centerCanvas() {
     var x = (windowWidth - width) / 2;
     var y = (windowHeight - height) / 2;
     canvas.position(x, y);
-}
-
-function xZero() {
-    return (windowWidth - width) / 2;
-}
-
-function yZero() {
-    return (windowHeight - height) / 2;
 }
