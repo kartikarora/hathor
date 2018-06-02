@@ -1,17 +1,16 @@
-var song, fft, to, spec, canvas;
+var song, fft, to, spectrum, canvas;
 var r, loaded = false;
+var lines = [];
 
 function loadingComplete() {
     song.setLoop(false);
     song.play();
+    song.setVolume(0.5);
     song.onended(songEnded);
     fft = new p5.FFT();
     fft.setInput(song);
     to = color(0, 0, 0);
 
-    // player_img = r > 2 ? createImg('pause.svg') : createImg('pause_dark.svg');
-    // player_img.position(windowWidth / 2 - 24, windowHeight - 120);
-    // player_img.mousePressed(songStateChange);
     loaded = true;
 }
 
@@ -21,15 +20,14 @@ function setup() {
     r = random([1, 2, 3, 4]);
     song = loadSound('song' + r + '.mp3', loadingComplete);
     soundFormats('mp3');
+
+
 }
 
 function draw() {
     if (loaded) {
-        spec = fft.analyze();
+        spectrum = fft.analyze();
         background(r > 2 ? 0 : 255);
-
-        let gun = new Gun(mouseX, mouseY, r > 2 ? 255 : 0, true);
-        gun.draw();
 
         // borders
         push();
@@ -59,6 +57,22 @@ function draw() {
         stroke(r > 2 ? 255 : 0);
         line(0, 0, 0, map(song.currentTime(), 0, song.duration(), 0, -height + 8));
         pop();
+
+        while (lines.length > 0) {
+            lines.pop();
+        }
+        for (var i = 0; i < 8; i++) {
+            lines.push(new Line(
+                (i * (height - 512) / 9) + 256,
+                color(r > 2 ? 255 : 0),
+                splitSpectrum(spectrum, 128)[i]
+            ));
+        }
+
+        lines.forEach(function (line) {
+            line.draw();
+        });
+
     } else {
         background(r > 2 ? 0 : 255);
         fill(r > 2 ? 255 : 0);
@@ -70,17 +84,17 @@ function draw() {
 
 function keyPressed() {
     if (keyCode === 32) {
-        if (song.isPlaying()) {
-            song.pause();
-        } else {
-            song.play();
-        }
+        mousePressed();
     }
     return false;
 }
 
 function mousePressed() {
-
+    if (song.isPlaying()) {
+        song.pause();
+    } else {
+        song.play();
+    }
 }
 
 function centerCanvas() {
@@ -91,4 +105,12 @@ function centerCanvas() {
 
 function songEnded() {
     saveCanvas('album_art', 'png');
+}
+
+function splitSpectrum(arr, chunkSize) {
+    var groups = [], i;
+    for (i = 0; i < arr.length; i += chunkSize) {
+        groups.push(arr.slice(i, i + chunkSize));
+    }
+    return groups;
 }
