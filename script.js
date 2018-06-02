@@ -16,8 +16,8 @@ function loadingComplete() {
     fft.setInput(song);
     to = color(0, 0, 0);
     loaded = true;
-    save.position(windowWidth / 2 - 100 - 24, windowHeight - 90);
-    spotify.position(windowWidth / 2 + 100 - 24, windowHeight - 90);
+    save.position(width / 2 - 100-24, windowHeight - 150);
+    spotify.position(width / 2 + 100-24, windowHeight - 150);
     save.hide();
     spotify.hide();
     save.mousePressed(saveArt);
@@ -25,10 +25,9 @@ function loadingComplete() {
 }
 
 function setup() {
-    canvas = createCanvas(856, 956);
-    bg = createGraphics(856, 100);
-    tg = createGraphics(856, 856);
-    centerCanvas();
+    canvas = createCanvas(756, 856);
+    bg = createGraphics(756, 100);
+    tg = createGraphics(756, 756);
     r = random([1, 2, 3, 4]);
     save = createImg(r > 2 ? 'save_dark.svg' : 'save_light.svg');
     spotify = createImg(r > 2 ? 'spotify_dark.svg' : 'spotify_light.svg');
@@ -91,7 +90,7 @@ function draw() {
 
         // draw canvas
         image(tg, 0, 0);
-        image(bg, 0, 857);
+        image(bg, 0, 757);
 
     } else {
         background(r > 2 ? 0 : 255);
@@ -115,13 +114,6 @@ function pauseToggle() {
     } else {
         song.play();
     }
-}
-
-
-function centerCanvas() {
-    var x = (windowWidth - width) / 2;
-    var y = (windowHeight - height) / 2;
-    canvas.position(x, y);
 }
 
 function saveArt() {
