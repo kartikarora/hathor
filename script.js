@@ -8,6 +8,7 @@ var song_url = ['https://open.spotify.com/track/621W0YFtYurfPC6hwvmWgc?si=ihsnFk
     'https://open.spotify.com/track/1ONqVFerUEyoXpgtBpbzfM?si=P56G95CKSmel-5l1rCpz2w',
     'https://open.spotify.com/track/30cjrAb2I858LOMhwGcrjd?si=6fUurRWaSruNQ1ueE0lBIQ'];
 
+// custom setup function, acts as a callback when loading is complete
 function loadingComplete() {
     song.setLoop(false);
     song.play();
@@ -24,16 +25,18 @@ function loadingComplete() {
     spotify.mousePressed(openSpotify);
 }
 
+// intiates setup of song and images
 function setup() {
-    canvas = createCanvas(756, 856);
-    bg = createGraphics(756, 100);
-    tg = createGraphics(756, 756);
+    canvas = createCanvas(756, 856);// bottom graphics
+    bg = createGraphics(756, 100);// top graphics
+    tg = createGraphics(756, 756);// random song selector
     r = random([1, 2, 3, 4]);
     save = createImg(r > 2 ? 'save_dark.svg' : 'save_light.svg');
     spotify = createImg(r > 2 ? 'spotify_dark.svg' : 'spotify_light.svg');
     song = loadSound('song' + r + '.mp3', loadingComplete);
     soundFormats('mp3');
 }
+
 
 function draw() {
     if (loaded) {
@@ -50,9 +53,12 @@ function draw() {
         tg.line(tg.width - 64, tg.height - 64, map(song.currentTime(), 0, song.duration(), tg.width - 64, 64), tg.height - 64);
 
         // spectral lines
+        // remove old lines
         while (lines.length > 0) {
             lines.pop();
         }
+
+        // realtime line value generation
         for (var i = 0; i < 5; i++) {
             lines.push(new Line(
                 (i * (tg.height - 512) / 6) + 256,
@@ -61,6 +67,7 @@ function draw() {
             ));
         }
 
+        // draw each line on top graphics
         lines.forEach(function (line) {
             line.draw(tg);
         });
@@ -69,6 +76,7 @@ function draw() {
         tg.fill(r > 2 ? 255 : 0);
         tg.textSize(32);
 
+        // artist name
         tg.push();
         tg.translate(tg.width / 2, tg.height / 2);
         tg.rotate(-PI / 2);
@@ -76,6 +84,7 @@ function draw() {
         tg.text(song_artist[r - 1], 32, 44);
         tg.pop();
 
+        // song name
         tg.push();
         tg.translate(tg.width / 2, tg.height / 2);
         tg.rotate(PI / 2);
@@ -88,7 +97,7 @@ function draw() {
         spotify.show();
         save.show();
 
-        // draw canvas
+        // draw graphics on canvas
         image(tg, 0, 0);
         image(bg, 0, 757);
 
@@ -101,6 +110,7 @@ function draw() {
     }
 }
 
+// callback for keyboard key press
 function keyPressed() {
     if (keyCode === 32) {
         pauseToggle();
@@ -108,6 +118,7 @@ function keyPressed() {
     return false;
 }
 
+// function to handle pause and play of song
 function pauseToggle() {
     if (song.isPlaying()) {
         song.pause();
@@ -116,14 +127,17 @@ function pauseToggle() {
     }
 }
 
+// save album art as png file; only the top graphics
 function saveArt() {
     saveCanvas(tg, 'album_art', 'png');
 }
 
+// open current song on spotify
 function openSpotify() {
     window.open(song_url[r - 1], '_blank');
 }
 
+// split spectrum array into multipe chunks for plotting on line
 function splitSpectrum(arr, chunkSize) {
     var groups = [], i;
     for (i = 0; i < arr.length; i += chunkSize) {

@@ -1,3 +1,4 @@
+// class to contain sing line of spectrum
 class Line {
     constructor(height, color, spectrum) {
         this._height = height;
@@ -5,6 +6,7 @@ class Line {
         this._spectrum = spectrum;
     }
 
+    // draw ellipses on overlay graphics
     draw(graphics) {
         graphics.push();
         graphics.translate(0, this._height);
