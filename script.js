@@ -1,4 +1,4 @@
-var song, fft, to, spectrum, canvas, bg, tg;
+var song, fft, to, spectrum, canvas, bottomGraphics, topGraphics;
 var r, loaded = false, save, spotify;
 var lines = [];
 var song_name = ['Heavy Metal', 'Canon', 'Bohemian Rhapsody', 'Radio Ga Ga'];
@@ -28,8 +28,8 @@ function loadingComplete() {
 // intiates setup of song and images
 function setup() {
     canvas = createCanvas(756, 856);// bottom graphics
-    bg = createGraphics(756, 100);// top graphics
-    tg = createGraphics(756, 756);// random song selector
+    bottomGraphics = createGraphics(756, 100);// top graphics
+    topGraphics = createGraphics(756, 756);// random song selector
     r = random([1, 2, 3, 4]);
     save = createImg(r > 2 ? 'save_dark.svg' : 'save_light.svg');
     spotify = createImg(r > 2 ? 'spotify_dark.svg' : 'spotify_light.svg');
@@ -42,15 +42,15 @@ function draw() {
     if (loaded) {
         //Top Graphics
         spectrum = fft.analyze().splice(0, 640);
-        tg.background(r > 2 ? 0 : 255);
+        topGraphics.background(r > 2 ? 0 : 255);
 
         // borders
-        tg.stroke(r > 2 ? 255 : 0);
-        tg.strokeWeight(2);
-        tg.line(64, 64, map(song.currentTime(), 0, song.duration(), 64, tg.width - 64), 64);
-        tg.line(64, 64, 64, map(song.currentTime(), 0, song.duration(), 64, tg.height - 64));
-        tg.line(tg.width - 64, tg.height - 64, tg.width - 64, map(song.currentTime(), 0, song.duration(), tg.height - 64, 64));
-        tg.line(tg.width - 64, tg.height - 64, map(song.currentTime(), 0, song.duration(), tg.width - 64, 64), tg.height - 64);
+        topGraphics.stroke(r > 2 ? 255 : 0);
+        topGraphics.strokeWeight(2);
+        topGraphics.line(64, 64, map(song.currentTime(), 0, song.duration(), 64, topGraphics.width - 64), 64);
+        topGraphics.line(64, 64, 64, map(song.currentTime(), 0, song.duration(), 64, topGraphics.height - 64));
+        topGraphics.line(topGraphics.width - 64, topGraphics.height - 64, topGraphics.width - 64, map(song.currentTime(), 0, song.duration(), topGraphics.height - 64, 64));
+        topGraphics.line(topGraphics.width - 64, topGraphics.height - 64, map(song.currentTime(), 0, song.duration(), topGraphics.width - 64, 64), topGraphics.height - 64);
 
         // spectral lines
         // remove old lines
@@ -61,7 +61,7 @@ function draw() {
         // realtime line value generation
         for (var i = 0; i < 5; i++) {
             lines.push(new Line(
-                (i * (tg.height - 512) / 6) + 256,
+                (i * (topGraphics.height - 512) / 6) + 256,
                 color(r > 2 ? 255 : 0),
                 splitSpectrum(spectrum, 128)[i]
             ));
@@ -69,37 +69,37 @@ function draw() {
 
         // draw each line on top graphics
         lines.forEach(function (line) {
-            line.draw(tg);
+            line.draw(topGraphics);
         });
 
         // text
-        tg.fill(r > 2 ? 255 : 0);
-        tg.textSize(32);
+        topGraphics.fill(r > 2 ? 255 : 0);
+        topGraphics.textSize(32);
 
         // artist name
-        tg.push();
-        tg.translate(tg.width / 2, tg.height / 2);
-        tg.rotate(-PI / 2);
-        tg.translate(-tg.width / 2, -tg.height / 2);
-        tg.text(song_artist[r - 1], 32, 44);
-        tg.pop();
+        topGraphics.push();
+        topGraphics.translate(topGraphics.width / 2, topGraphics.height / 2);
+        topGraphics.rotate(-PI / 2);
+        topGraphics.translate(-topGraphics.width / 2, -topGraphics.height / 2);
+        topGraphics.text(song_artist[r - 1], 32, 44);
+        topGraphics.pop();
 
         // song name
-        tg.push();
-        tg.translate(tg.width / 2, tg.height / 2);
-        tg.rotate(PI / 2);
-        tg.translate(-tg.width / 2, -tg.height / 2);
-        tg.text(song_name[r - 1], 32, 44);
-        tg.pop();
+        topGraphics.push();
+        topGraphics.translate(topGraphics.width / 2, topGraphics.height / 2);
+        topGraphics.rotate(PI / 2);
+        topGraphics.translate(-topGraphics.width / 2, -topGraphics.height / 2);
+        topGraphics.text(song_name[r - 1], 32, 44);
+        topGraphics.pop();
 
         // Bottom Graphics
-        bg.background(r > 2 ? 255 : 0);
+        bottomGraphics.background(r > 2 ? 255 : 0);
         spotify.show();
         save.show();
 
         // draw graphics on canvas
-        image(tg, 0, 0);
-        image(bg, 0, 757);
+        image(topGraphics, 0, 0);
+        image(bottomGraphics, 0, 757);
 
     } else {
         background(r > 2 ? 0 : 255);
@@ -129,7 +129,7 @@ function pauseToggle() {
 
 // save album art as png file; only the top graphics
 function saveArt() {
-    saveCanvas(tg, 'album_art', 'png');
+    saveCanvas(topGraphics, 'album_art', 'png');
 }
 
 // open current song on spotify
