@@ -1,3 +1,5 @@
+// All music sourced from https://bensound.com
+
 let song, fft, to, spectrum, bottomGraphics, topGraphics;
 let songNumber, loaded = false, save, download, line, circle, type, theme;
 let lines = [], circles = [];
