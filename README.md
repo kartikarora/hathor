@@ -6,4 +6,4 @@ This is just a prototype, it can be scaled up to analyse any audio and generate 
 
 [Joy Division – Unknown Pleasures album cover](https://i.etsystatic.com/17408700/r/il/9ecc8c/1501868680/il_794xN.1501868680_f6f1.jpg)
 
-Hathor allows the user to save the generated album art as a PNG file. For the prototype, one song is selected at random from a bank of 4 songs. The songs have been taken from (Bensound)[https://bensound.com] and have been carefully chosen to cover different frequency ranges. 
+Hathor allows the user to save the generated album art as a PNG file. For the prototype, one song is selected at random from a bank of 4 songs. The songs have been taken from [Bensound](https://bensound.com) and have been carefully chosen to cover different frequency ranges. 
